@@ -99,7 +99,7 @@ bool al(int _data) {
           }
 
           for (int i = 0; i < 3; i++) {
-            cells[i] = Received_Data.data[(2 * i) + 1 * 256 + Received_Data.data[(2 * i) + 2];
+            cells[i] = Received_Data.data[(2 * i) + 1] * 256 + Received_Data.data[(2 * i) + 2];
           }
         }
 
@@ -110,7 +110,7 @@ bool al(int _data) {
           }
 
           for (int i = 0; i < 3; i++) {
-            cells[i] = Received_Data.data[(2 * i) + 1 * 256 + Received_Data.data[(2 * i) + 2];
+            cells[i] = Received_Data.data[(2 * i) + 1] * 256 + Received_Data.data[(2 * i) + 2];
           }
         }
 
@@ -120,7 +120,7 @@ bool al(int _data) {
           }
 
           for (int i = 3; i < 6; i++) {
-            cells[i] = Received_Data.data[(2 * i) + 1 * 256 + Received_Data.data[(2 * i) + 2];
+            cells[i] = Received_Data.data[(2 * i) + 1] * 256 + Received_Data.data[(2 * i) + 2];
           }
         }
 
@@ -131,7 +131,7 @@ bool al(int _data) {
           }
 
           for (int i = 6; i < 9; i++) {
-            cells[i] = Received_Data.data[(2 * i) + 1 * 256 + Received_Data.data[(2 * i) + 2];
+            cells[i] = Received_Data.data[(2 * i) + 1] * 256 + Received_Data.data[(2 * i) + 2];
           }
         }
 
@@ -141,7 +141,7 @@ bool al(int _data) {
           }
 
           for (int i = 9; i < 12; i++) {
-            cells[i] = Received_Data.data[(2 * i) + 1 * 256 + Received_Data.data[(2 * i) + 2];
+            cells[i] = Received_Data.data[(2 * i) + 1] * 256 + Received_Data.data[(2 * i) + 2];
           }
         }
 
@@ -153,7 +153,7 @@ bool al(int _data) {
           }
 
           for (int i = 12; i < 15; i++) {
-            cells[i] = Received_Data.data[(2 * i) + 1 * 256 + Received_Data.data[(2 * i) + 2];
+            cells[i] = Received_Data.data[(2 * i) + 1] * 256 + Received_Data.data[(2 * i) + 2];
           }
         }
         
@@ -163,7 +163,7 @@ bool al(int _data) {
           }
 
           for (int i = 15; i < 18; i++) {
-            cells[i] = Received_Data.data[(2 * i) + 1 * 256 + Received_Data.data[(2 * i) + 2];
+            cells[i] = Received_Data.data[(2 * i) + 1] * 256 + Received_Data.data[(2 * i) + 2];
           }
         }
         
@@ -173,7 +173,7 @@ bool al(int _data) {
           }
 
           for (int i = 18; i < 20; i++) {
-            cells[i] = Received_Data.data[(2 * i) + 1 * 256 + Received_Data.data[(2 * i) + 2];
+            cells[i] = Received_Data.data[(2 * i) + 1] * 256 + Received_Data.data[(2 * i) + 2];
           }
         }
 
