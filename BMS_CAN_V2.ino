@@ -177,11 +177,45 @@ bool al(int _data) {
           }
         }
 
-        for (int i = 0; i < Received_Data.can_dlc; i++) {  // print the data
-          Serial.print(Received_Data.data[i], DEC);
-          Serial.print(" ");
-        }
+        // for (int i = 0; i < Received_Data.can_dlc; i++) {  // print the data
+        //   Serial.print(Received_Data.data[i], DEC);
+        //   Serial.print(" ");
+        // }
+        // Serial.println();
+
+        Serial.print("Temp1: ");
+        Serial.println(temps[0]);
+
+        Serial.print("Temp2: ");
+        Serial.println(temps[1]);
+
+        Serial.print("Temp3: ");
+        Serial.println(temps[2]);
+
+        Serial.print("Temp4: ");
+        Serial.println(temps[3]);
+        
+        Serial.print("Max Temp: ");
+        Serial.println(temps[0]);
+
         Serial.println();
+
+        Serial.print("Sum Voltage: ");
+        Serial.println(sumVoltage);
+        Serial.print("SOC: ");
+        Serial.println(soc);
+        Serial.print("Power Watt: ");
+        Serial.println(powerWatt);
+        Serial.println();
+
+        Serial.print("Cells:");
+        for(int i = 0; i < 20; i++) {
+          Serial.print(cells[i]);
+          Serial.print("  ");
+        }
+
+
+
         return true;
       }
     }
