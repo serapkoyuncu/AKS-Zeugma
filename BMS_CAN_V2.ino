@@ -105,16 +105,6 @@ bool al(int _data) {
 
 
         if (Received_Data.data[0] == 104) {
-          for (int i = 0; i < 6; i++) {
-            cellsBytes[i] = Received_Data.data[i + 1];
-          }
-
-          for (int i = 0; i < 3; i++) {
-            cells[i] = Received_Data.data[(2 * i) + 1] * 256 + Received_Data.data[(2 * i) + 2];
-          }
-        }
-
-        if (Received_Data.data[0] == 105) {
           for (int i = 6; i < 12; i++) {
             cellsBytes[i] = Received_Data.data[i + 1];
           }
@@ -124,8 +114,7 @@ bool al(int _data) {
           }
         }
 
-
-        if (Received_Data.data[0] == 106) {
+        if (Received_Data.data[0] == 105) {
           for (int i = 12; i < 18; i++) {
             cellsBytes[i] = Received_Data.data[i + 1];
           }
@@ -134,6 +123,7 @@ bool al(int _data) {
             cells[i] = Received_Data.data[(2 * i) + 1] * 256 + Received_Data.data[(2 * i) + 2];
           }
         }
+
 
         if (Received_Data.data[0] == 106) {
           for (int i = 18; i < 24; i++) {
@@ -145,9 +135,7 @@ bool al(int _data) {
           }
         }
 
-
-
-        if (Received_Data.data[0] == 106) {
+        if (Received_Data.data[0] == 107) {
           for (int i = 24; i < 30; i++) {
             cellsBytes[i] = Received_Data.data[i + 1];
           }
@@ -156,8 +144,10 @@ bool al(int _data) {
             cells[i] = Received_Data.data[(2 * i) + 1] * 256 + Received_Data.data[(2 * i) + 2];
           }
         }
-        
-        if (Received_Data.data[0] == 106) {
+
+
+
+        if (Received_Data.data[0] == 108) {
           for (int i = 30; i < 36; i++) {
             cellsBytes[i] = Received_Data.data[i + 1];
           }
@@ -166,16 +156,17 @@ bool al(int _data) {
             cells[i] = Received_Data.data[(2 * i) + 1] * 256 + Received_Data.data[(2 * i) + 2];
           }
         }
-        
-        if (Received_Data.data[0] == 106) {
+
+        if (Received_Data.data[0] == 109) {
           for (int i = 36; i < 40; i++) {
             cellsBytes[i] = Received_Data.data[i + 1];
           }
 
-          for (int i = 18; i < 20; i++) {
+          for (int i = 18; i < 21; i++) {
             cells[i] = Received_Data.data[(2 * i) + 1] * 256 + Received_Data.data[(2 * i) + 2];
           }
         }
+
 
         // for (int i = 0; i < Received_Data.can_dlc; i++) {  // print the data
         //   Serial.print(Received_Data.data[i], DEC);
@@ -194,7 +185,7 @@ bool al(int _data) {
 
         Serial.print("Temp4: ");
         Serial.println(temps[3]);
-        
+
         Serial.print("Max Temp: ");
         Serial.println(temps[0]);
 
@@ -209,11 +200,11 @@ bool al(int _data) {
         Serial.println();
 
         Serial.print("Cells:");
-        for(int i = 0; i < 20; i++) {
+        for (int i = 0; i < 20; i++) {
           Serial.print(cells[i]);
           Serial.print("  ");
         }
-
+        Serial.println();
 
 
         return true;
