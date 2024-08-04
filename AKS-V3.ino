@@ -38,7 +38,7 @@ int dosyaSayaci = 0;
 const int PRESARJ_ROLE_PIN = 22;
 const int MOTOR_SURUCU_ROLE_PIN = 23;
 const int SARJ_ROLE_PIN = 24;
-const int SARJ_DURUM_PIN = 32; // 25. pin olması gerekiyor. Düzeltilecek!
+const int SARJ_DURUM_PIN = 32;  // 25. pin olması gerekiyor. Düzeltilecek!
 unsigned long presarjBaslangicZamani = 0;
 const unsigned long PRESARJ_SURESI = 3000;  // 3 saniye
 bool sarjDurumu = false;
@@ -51,7 +51,14 @@ bool buton2State = LOW;
 bool sagSinyalAktif = false;
 bool solSinyalAktif = false;
 char mevcutDosyaAdi[13];
+
+// SOC
+unsigned long currentCapacity = 0;
+int soc = 0;
+
+
 File veriDosyasi;
+
 
 
 struct Veriler {
@@ -94,8 +101,16 @@ bool requestData(uint8_t requestId) {
     delay(50);
 
     if (mcp2515.readMessage(&Received_Data) == MCP2515::ERROR_OK) {
+      for (int i = 0; i < 8; i++) {
+        Serial.println(Received_Data.data[i]);
+      }
       if (Received_Data.data[0] == requestId + 100) {
         processReceivedData(requestId + 100);
+        return true;
+      }
+
+      if(Received_Data.data[0] == 212) {
+        processReceivedData(212);
         return true;
       }
     }
@@ -134,7 +149,17 @@ void processReceivedData(uint8_t responseId) {
       bmsData.cellVoltages[18] = (Received_Data.data[1] << 8) | Received_Data.data[2];
       bmsData.cellVoltages[19] = (Received_Data.data[3] << 8) | Received_Data.data[4];
       break;
+
+    case 212:
+      soc = Received_Data.data[1];
+      currentCapacity = (Received_Data.data[2] << 8) | Received_Data.data[3];
+      // Serial.print("SOCCCC: ");
+      // Serial.print(soc);
+      // Serial.print("CURRENTTTTT: ");
+      // Serial.println(currentCapacity);
+      break;
   }
+
   bmsData.maxTemp = max(bmsData.temps[0], bmsData.temps[1]);
   bmsData.maxTemp = max(bmsData.maxTemp, bmsData.temps[2]);
   bmsData.maxTemp = max(bmsData.maxTemp, bmsData.temps[3]);
@@ -144,33 +169,35 @@ void processReceivedData(uint8_t responseId) {
 
 
 void printBmsData() {
-  Serial.println("BMS Data:");
-  Serial.print("Temperatures: ");
+  // Serial.println("BMS Data:");
+  // Serial.print("Temperatures: ");
   for (int i = 0; i < 4; i++) {
-    Serial.print(bmsData.temps[i]);
-    Serial.print(" ");
+    // Serial.print(bmsData.temps[i]);
+    // Serial.print(" ");
   }
-  Serial.println();
+  // Serial.println();
 
-  Serial.print("Max Temperature: ");
-  Serial.println(bmsData.maxTemp);
-  Serial.print("Sum Voltage: ");
-  Serial.println(bmsData.sumVoltage);
-  Serial.print("SOC: ");
-  Serial.println(bmsData.soc);
-  Serial.print("Power: ");
-  Serial.println(bmsData.powerWatt);
+  // Serial.print("Max Temperature: ");
+  // Serial.println(bmsData.maxTemp);
+  // Serial.print("Sum Voltage: ");
+  // Serial.println(bmsData.sumVoltage);
+  // Serial.print("SOC: ");
+  // Serial.println(bmsData.soc);
+  // Serial.print("Power: ");
+  // Serial.println(bmsData.powerWatt);
 
-  Serial.println("Cell Voltages:");
+  // Serial.println("Cell Voltages:");
   for (int i = 0; i < 20; i++) {
-    Serial.print(bmsData.cellVoltages[i]);
-    Serial.print(" ");
-    if ((i + 1) % 5 == 0) Serial.println();
+    // Serial.print(bmsData.cellVoltages[i]);
+    // Serial.print(" ");
+    if ((i + 1) % 5 == 0) {
+      // Serial.println();
+    }
   }
 
-  Serial.print("Current: ");
-  Serial.println(bmsData.current);
-  Serial.println();
+  // Serial.print("Current: ");
+  // Serial.println(bmsData.current);
+  // Serial.println();
 }
 
 void setup() {
@@ -182,10 +209,10 @@ void setup() {
   nextion.begin(9600);
   randomSeed(analogRead(0));
   if (!SD.begin(chipSelect)) {
-    Serial.println("SD kart başlatılamadı!");
+    // Serial.println("SD kart başlatılamadı!");
     return;
   }
-  Serial.println("SD kart başlatıldı.");
+  // Serial.println("SD kart başlatıldı.");
   yeniDosyaAc();
   pinMode(PRESARJ_ROLE_PIN, OUTPUT);
   pinMode(MOTOR_SURUCU_ROLE_PIN, OUTPUT);
@@ -211,9 +238,10 @@ void setup() {
 }
 
 void loop() {
-  for (int i = 1; i <= 9; i++) {
-    requestData(i);
-  }
+  // for (int i = 1; i <= 9; i++) {
+  //   requestData(i);
+  // }
+  requestData(212);
 
   printBmsData();
 
@@ -228,12 +256,12 @@ void loop() {
     if (!isnan(tempValue)) {
       tempDataReceived = true;
       lastLoraDataTime = currentTime;
-      Serial.print("Temp verisi alındı: ");
-      Serial.println(tempValue);
+      // Serial.print("Temp verisi alındı: ");
+      // Serial.println(tempValue);
 
       if (!loraConnected) {
         loraConnected = true;
-        Serial.println("LoRa bağlantısı kuruldu");
+        // Serial.println("LoRa bağlantısı kuruldu");
       }
     }
     rsc.close();
@@ -243,10 +271,10 @@ void loop() {
   unsigned long timeSinceLastData = currentTime - lastLoraDataTime;
   if (loraConnected) {
     if (timeSinceLastData > loraWarningTime && timeSinceLastData <= loraTimeout) {
-      Serial.println("Uyarı: LoRa verisi gecikiyor");
+      // Serial.println("Uyarı: LoRa verisi gecikiyor");
     } else if (timeSinceLastData > loraTimeout) {
       loraConnected = false;
-      Serial.println("LoRa bağlantısı kesildi");
+      // Serial.println("LoRa bağlantısı kesildi");
     }
   }
   veriKaydetSD();
@@ -268,11 +296,11 @@ void loop() {
   if (yeniSarjDurumu != sarjDurumu) {
     sarjDurumu = yeniSarjDurumu;
     if (sarjDurumu) {
-      Serial.println("Araç şarj oluyor");
+      // Serial.println("Araç şarj oluyor");
       digitalWrite(MOTOR_SURUCU_ROLE_PIN, LOW);  // Motor sürücü rölesini kapat
       digitalWrite(SARJ_ROLE_PIN, HIGH);         // Şarj rölesini aç
     } else {
-      Serial.println("Araç şarjı bitti");
+      // Serial.println("Araç şarjı bitti");
       digitalWrite(SARJ_ROLE_PIN, LOW);           // Şarj rölesini kapat
       digitalWrite(MOTOR_SURUCU_ROLE_PIN, HIGH);  // Motor sürücü rölesini aç
     }
@@ -281,16 +309,16 @@ void loop() {
   if (data.sicaklik >= 60) {
     if (sarjDurumu) {
       digitalWrite(SARJ_ROLE_PIN, LOW);  // Şarj rölesini kapat
-      Serial.println("Yüksek sıcaklık nedeniyle şarj durduruldu");
+      // Serial.println("Yüksek sıcaklık nedeniyle şarj durduruldu");
     } else {
       digitalWrite(MOTOR_SURUCU_ROLE_PIN, LOW);  // Motor sürücü rölesini kapat
-      Serial.println("Yüksek sıcaklık nedeniyle motor sürücü kapatıldı");
+      // Serial.println("Yüksek sıcaklık nedeniyle motor sürücü kapatıldı");
     }
   }
   // Düşük voltaj röle kontrolü
   if (data.toplamVoltaj <= 75.0) {
     digitalWrite(MOTOR_SURUCU_ROLE_PIN, LOW);  // Motor sürücü rölesini kapat
-    Serial.println("Düşük batarya voltajı! Motor sürücü kapatıldı.");
+    // Serial.println("Düşük batarya voltajı! Motor sürücü kapatıldı.");
   } else if (!sarjDurumu && data.sicaklik < 60) {
     digitalWrite(MOTOR_SURUCU_ROLE_PIN, HIGH);  // Normal durumlarda motor sürücü rölesini aç
   }
@@ -462,9 +490,9 @@ void yeniDosyaAc() {
 
   veriDosyasi = SD.open(mevcutDosyaAdi, FILE_WRITE);
   if (veriDosyasi) {
-    Serial.println("Yeni dosya açıldı: " + String(mevcutDosyaAdi));
+    // Serial.println("Yeni dosya açıldı: " + String(mevcutDosyaAdi));
   } else {
-    Serial.println("Yeni dosya açılamadı: " + String(mevcutDosyaAdi));
+    // Serial.println("Yeni dosya açılamadı: " + String(mevcutDosyaAdi));
     while (true)
       ;
   }
@@ -489,14 +517,14 @@ void dosyayaYazdir() {
 void veriKaydetSD() {
   if (veriDosyasi) {
 
-    Serial.print("Araç Hızı: ");
-    Serial.println(data.arac_hizi);
-    Serial.print("Kalan Enerji: ");
-    Serial.println(data.kalanEnerjiMiktari);
-    Serial.print("Toplam Voltaj: ");
-    Serial.println(data.toplamVoltaj);
-    Serial.print("Max Sıcaklık: ");
-    Serial.println(bmsData.maxTemp);
+    // Serial.print("Araç Hızı: ");
+    // Serial.println(data.arac_hizi);
+    // Serial.print("Kalan Enerji: ");
+    // Serial.println(data.kalanEnerjiMiktari);
+    // Serial.print("Toplam Voltaj: ");
+    // Serial.println(data.toplamVoltaj);
+    // Serial.print("Max Sıcaklık: ");
+    // Serial.println(bmsData.maxTemp);
 
     if (data.kalanEnerjiMiktari == 0 && data.toplamVoltaj == 0 && bmsData.maxTemp == 0) {
       return;
@@ -505,13 +533,13 @@ void veriKaydetSD() {
     dosyayaYazdir();
 
     veriDosyasi.flush();
-    Serial.println("Veri SD karta yazıldı.");
+    // Serial.println("Veri SD karta yazıldı.");
   } else {
-    Serial.println("SD karta yazma hatası!");
+    // Serial.println("SD karta yazma hatası!");
     if (SD.begin(chipSelect)) {
       yeniDosyaAc();
     } else {
-      Serial.println("SD kart yeniden başlatılamadı!");
+      // Serial.println("SD kart yeniden başlatılamadı!");
     }
   }
 }
