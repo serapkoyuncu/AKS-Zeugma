@@ -193,7 +193,6 @@ void loop() {
   int lowByte = Wire.read();  // receive low byte
   int receivedData = (highByte << 8) | lowByte;
 
- int 
   Serial.print("Soccccccccccccc: ");
   Serial.println(soc);
 
