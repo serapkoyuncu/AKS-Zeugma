@@ -1,9 +1,4 @@
-/*
-ringbuffer.write kodları açılmalı.
-SD kart bağlandığında döngü hızlandı mı diye kontrol edilmeli.
-Serial.print kapatıldı. Açılabilir.
 
-*/
 
 #include "LoRa_E22.h"
 #include <SPI.h>
